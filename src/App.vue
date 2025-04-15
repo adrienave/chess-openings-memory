@@ -1,20 +1,27 @@
 <script setup lang="ts">
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { openings } from '@/data/openings.ts';
 import _ from "lodash";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
+const DELAY_REFRESH_TURN_COLOR_MS = 50;
 
 const currentOpening: Opening = ref({});
 const suggestions: string[] = ref([]);
 const boardConfig = reactive({
   viewOnly: true
 });
+let boardAPI;
 const points: number = ref(0);
 const round: number = ref(0);
 const roundStarted: boolean = ref(true);
+const turnColor: string = ref("");
+
+const refreshTurnColor = () => {
+  turnColor.value = boardAPI?.getTurnColor();
+}
 
 const pickOpening = () => {
   let newOpening;
@@ -34,6 +41,8 @@ const pickOpening = () => {
   }
   suggestions.value = _.shuffle(suggestions.value);
   roundStarted.value = true;
+
+  setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
 }
 
 const resetSuggestionBackground = (suggestionElement: HTMLElement) => {
@@ -60,6 +69,10 @@ pickOpening();
 const toggleSpoiler = (event) => {
   event.target.classList.toggle('spoiler');
 }
+
+onMounted(() => {
+  refreshTurnColor();
+});
 </script>
 
 <template>
@@ -69,17 +82,21 @@ const toggleSpoiler = (event) => {
 
   <main>
     <div>
-      <TheChessboard id="chessboard" :board-config="boardConfig" reactive-config />
+      <TheChessboard id="chessboard" :board-config="boardConfig" @board-created="(api) => {
+        boardAPI = api;
+      }" reactive-config />
       <p>{{ boardConfig.fen }}</p>
     </div>
     <aside>
-      <div>Score: {{ points }} / {{ round }}</div>
+      <p>Score: {{ points }} / {{ round }}</p>
+      <p>Difficulty: {{currentOpening.difficulty}}</p>
+      <p>{{ turnColor }} to play</p>
       <div id="suggestions">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="!roundStarted">
           {{ suggestion }}
         </button>
       </div>
-      <h2 class="spoiler" @click="toggleSpoiler">{{currentOpening.name }}</h2>
+      <h2 class="spoiler" @click="toggleSpoiler">{{ currentOpening.name }}</h2>
     </aside>
   </main>
 </template>
@@ -97,6 +114,10 @@ main {
 aside {
   margin-left: 2rem;
   width: 700px;
+
+  p::first-letter {
+    text-transform: capitalize;
+  }
 
   #suggestions {
     position: absolute;
