@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import { TheChessboard } from 'vue3-chessboard';
+import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-import { ref, reactive, onMounted } from 'vue';
-import { openings } from '@/data/openings.ts';
+import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
+import { Opening, openings } from '@/data/openings';
 import _ from "lodash";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
 
-const currentOpening: Opening = ref({});
-const suggestions: string[] = ref([]);
-const boardConfig = reactive({
+const currentOpening: Ref<Opening> = ref(undefined);
+const suggestions: Ref<string[]> = ref([]);
+const boardConfig: Reactive<BoardConfig> = reactive({
   viewOnly: true
 });
-let boardAPI;
-const points: number = ref(0);
-const round: number = ref(0);
-const roundStarted: boolean = ref(true);
-const turnColor: string = ref("");
+let boardAPI: BoardApi;
+const points = ref(0);
+const round = ref(0);
+const roundStarted = ref(true);
+const turnColor = ref("");
 
 const refreshTurnColor = () => {
   turnColor.value = boardAPI?.getTurnColor();
 }
 
 const pickOpening = () => {
-  let newOpening;
+  let newOpening: Opening;
   do {
     newOpening = _.sample(openings);
-  } while (newOpening.fen === currentOpening.value.fen)
+  } while (newOpening.fen === currentOpening.value?.fen)
 
   currentOpening.value = newOpening
-  boardConfig.fen = currentOpening.value.fen;
+  boardConfig.fen = currentOpening.value?.fen;
 
-  suggestions.value = [currentOpening.value.name];
+  suggestions.value = [currentOpening.value?.name];
   while (suggestions.value.length < 4) {
     let suggestedOpening = _.sample(openings);
     if (!suggestions.value.includes(suggestedOpening.name)) {
@@ -45,13 +45,16 @@ const pickOpening = () => {
   setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
 }
 
-const resetSuggestionBackground = (suggestionElement: HTMLElement) => {
+const resetSuggestionBackground = (suggestionElement: Element) => {
   suggestionElement.classList.remove('correct');
   suggestionElement.classList.remove('invalid');
 }
 
-const selectSuggestion = (suggestion, event: Event) => {
+const selectSuggestion = (suggestion: string, event: Event) => {
   const suggestionElement = event.target;
+  if (!(suggestionElement instanceof Element)) {
+    return;
+  }
   if (currentOpening.value.name === suggestion) {
     points.value++;
     suggestionElement.classList.add('correct');
@@ -66,7 +69,10 @@ const selectSuggestion = (suggestion, event: Event) => {
 
 pickOpening();
 
-const toggleSpoiler = (event) => {
+const toggleSpoiler = (event: Event) => {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
   event.target.classList.toggle('spoiler');
 }
 

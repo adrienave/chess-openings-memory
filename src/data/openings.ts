@@ -1,4 +1,4 @@
-interface Opening {
+export interface Opening {
     name: string;
     fen: string;
     difficulty: number;
