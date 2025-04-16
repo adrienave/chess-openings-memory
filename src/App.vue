@@ -3,7 +3,7 @@ import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
 import { Opening, openings } from '@/data/openings';
-import _ from "lodash";
+import * as _ from "lodash";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
@@ -137,7 +137,7 @@ aside {
     padding-bottom: 2rem;
 
     button {
-      width: 300px;
+      width: 45%;
       overflow: hidden;
       white-space: nowrap;
       display: block;
