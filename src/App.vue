@@ -8,6 +8,8 @@ import _ from "lodash";
 const DELAY_BETWEEN_ROUNDS_MS = 500;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
 
+const isDevMode = process.env.NODE_ENV === 'development';
+
 const currentOpening: Ref<Opening> = ref(undefined);
 const suggestions: Ref<string[]> = ref([]);
 const boardConfig: Reactive<BoardConfig> = reactive({
@@ -102,7 +104,7 @@ onMounted(() => {
           {{ suggestion }}
         </button>
       </div>
-      <h2 class="spoiler" @click="toggleSpoiler">{{ currentOpening.name }}</h2>
+      <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode">{{ currentOpening.name }}</h2>
     </aside>
   </main>
 </template>
