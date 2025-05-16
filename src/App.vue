@@ -20,6 +20,7 @@ const points = ref(0);
 const round = ref(0);
 const roundEnded = ref(false);
 const turnColor = ref("");
+const eligibleOpenings = [...openings]
 
 const refreshTurnColor = () => {
   turnColor.value = boardAPI?.getTurnColor();
@@ -27,10 +28,11 @@ const refreshTurnColor = () => {
 
 const pickOpening = () => {
   let newOpening: Opening;
-  do {
-    newOpening = _.sample(openings);
-  } while (newOpening.fen === currentOpening.value?.fen)
-
+  if (eligibleOpenings.length == 0) {
+    eligibleOpenings.push(...openings);
+  }
+  newOpening = _.sample(eligibleOpenings);
+  _.pull(eligibleOpenings, newOpening);
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.fen;
 
