@@ -18,7 +18,7 @@ const boardConfig: Reactive<BoardConfig> = reactive({
 let boardAPI: BoardApi;
 const points = ref(0);
 const round = ref(0);
-const roundStarted = ref(true);
+const roundEnded = ref(false);
 const turnColor = ref("");
 
 const refreshTurnColor = () => {
@@ -42,7 +42,7 @@ const pickOpening = () => {
     }
   }
   suggestions.value = _.shuffle(suggestions.value);
-  roundStarted.value = true;
+  roundEnded.value = false;
 
   setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
 }
@@ -59,14 +59,13 @@ const selectSuggestion = (suggestion: string, event: Event) => {
   }
   if (currentOpening.value.name === suggestion) {
     points.value++;
-    suggestionElement.classList.add('correct');
   } else {
     suggestionElement.classList.add('invalid');
+    setTimeout(() => resetSuggestionBackground(suggestionElement), DELAY_BETWEEN_ROUNDS_MS);
   }
   round.value++;
-  roundStarted.value = false;
+  roundEnded.value = true;
   setTimeout(pickOpening, DELAY_BETWEEN_ROUNDS_MS);
-  setTimeout(() => resetSuggestionBackground(suggestionElement), DELAY_BETWEEN_ROUNDS_MS);
 }
 
 pickOpening();
@@ -100,7 +99,7 @@ onMounted(() => {
       <p>Difficulty: {{currentOpening.difficulty}}</p>
       <p>{{ turnColor }} to play</p>
       <div id="suggestions">
-        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="!roundStarted">
+        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
