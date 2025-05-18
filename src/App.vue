@@ -89,19 +89,19 @@ onMounted(() => {
     <h1 class="text-4xl text-white tracking-tighter">Chess Openings Memory</h1>
   </header>
 
-  <main>
-    <div>
+  <main class="md:flex">
+    <div class="md:shrink-0">
       <TheChessboard id="chessboard" :board-config="boardConfig" @board-created="(api) => {
         boardAPI = api;
       }" reactive-config />
       <p>{{ boardConfig.fen }}</p>
     </div>
-    <aside>
+    <aside class="sm:w-100 md:w-200 md:ml-8">
       <p>Score: {{ points }} / {{ round }}</p>
       <p>Difficulty: {{currentOpening.difficulty}}</p>
       <p>{{ turnColor }} to play</p>
-      <div id="suggestions">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
+      <div id="suggestions" class="md:flex">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 m-2 sm:m-1 w-96 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
@@ -118,35 +118,20 @@ header {
   margin-bottom: 1rem;
 }
 
-main {
-  display: flex;
-}
-
 aside {
-  margin-left: 2rem;
-  width: 700px;
-
   p::first-letter {
     text-transform: capitalize;
   }
 
   #suggestions {
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    display: flex;
     flex-wrap: wrap;
     padding-bottom: 2rem;
 
     button {
-      width: 45%;
       overflow: hidden;
       white-space: nowrap;
       display: block;
       text-overflow: ellipsis;
-      margin: 1rem;
-      padding: 10px;
       font-size: 25px;
     }
   }
