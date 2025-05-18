@@ -38,7 +38,7 @@ const pickOpening = () => {
 
   suggestions.value = [currentOpening.value?.name];
   while (suggestions.value.length < 4) {
-    let suggestedOpening = _.sample(openings);
+    let suggestedOpening = _.sample(openings.filter(opening => opening.category == currentOpening.value.category));
     if (!suggestions.value.includes(suggestedOpening.name)) {
       suggestions.value.push(suggestedOpening.name)
     }
