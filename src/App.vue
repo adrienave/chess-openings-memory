@@ -86,7 +86,7 @@ onMounted(() => {
 
 <template>
   <header>
-    <h1>Chess Openings Memory</h1>
+    <h1 class="text-4xl text-white tracking-tighter">Chess Openings Memory</h1>
   </header>
 
   <main>
@@ -101,7 +101,7 @@ onMounted(() => {
       <p>Difficulty: {{currentOpening.difficulty}}</p>
       <p>{{ turnColor }} to play</p>
       <div id="suggestions">
-        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
@@ -111,6 +111,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+@reference "./assets/base.css";
+
 header {
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -158,13 +160,11 @@ aside {
 }
 
 .correct {
-  background-color: var(--color-correct);
-  border-color: var(--color-correct);
+  @apply bg-green-700 hover:bg-green-800
 }
 
 .invalid {
-  background-color: var(--color-invalid);
-  border-color: var(--color-invalid);
+  @apply bg-red-700 hover:bg-red-800
 }
 
 button:disabled,
