@@ -86,7 +86,7 @@ onMounted(() => {
 
 <template>
   <header>
-    <h1 class="text-4xl text-white tracking-tighter">Chess Openings Memory</h1>
+    <h1 class="text-4xl md:text-5xl mb-2 md:mb-4 tracking-tighter">Chess Openings Memory</h1>
   </header>
 
   <main class="md:flex">
@@ -94,14 +94,14 @@ onMounted(() => {
       <TheChessboard id="chessboard" :board-config="boardConfig" @board-created="(api) => {
         boardAPI = api;
       }" reactive-config />
-      <p class="text-xs text-white">{{ boardConfig.fen }}</p>
+      <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8">
-      <p>Score: {{ points }} / {{ round }}</p>
-      <p>Difficulty: {{currentOpening.difficulty}}</p>
-      <p>{{ turnColor }} to play</p>
-      <div id="suggestions" class="md:flex">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 m-1 sm:m-2 w-96 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
+      <h2 class="text-3xl">SCORE: {{ points }} / {{ round }}</h2>
+      <p class="text-lg">Difficulty: {{currentOpening.difficulty}}</p>
+      <p class="text-lg">{{ turnColor }} to play</p>
+      <div id="suggestions" class="md:flex md:flex-wrap">
+        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
@@ -113,9 +113,12 @@ onMounted(() => {
 <style scoped>
 @reference "./assets/base.css";
 
-header {
-  line-height: 1.5;
-  margin-bottom: 1rem;
+* {
+  @apply text-white;
+}
+
+button {
+  @apply bg-blue-500 hover:bg-blue-700 py-2 px-2 m-1 sm:m-2 w-96 rounded text-2xl;
 }
 
 aside {
@@ -124,21 +127,16 @@ aside {
   }
 
   #suggestions {
-    flex-wrap: wrap;
-    padding-bottom: 2rem;
-
     button {
       overflow: hidden;
       white-space: nowrap;
-      display: block;
       text-overflow: ellipsis;
-      font-size: 25px;
     }
   }
 }
 
 .spoiler {
-  background-color: var(--color-spoiler);
+  @apply bg-white;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
@@ -154,6 +152,6 @@ aside {
 
 button:disabled,
 button[disabled]{
-  color: var(--color-text);
+  @apply text-gray-400;
 }
 </style>
