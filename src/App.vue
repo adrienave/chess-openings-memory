@@ -94,14 +94,14 @@ onMounted(() => {
       <TheChessboard id="chessboard" :board-config="boardConfig" @board-created="(api) => {
         boardAPI = api;
       }" reactive-config />
-      <p>{{ boardConfig.fen }}</p>
+      <p class="text-xs text-white">{{ boardConfig.fen }}</p>
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8">
       <p>Score: {{ points }} / {{ round }}</p>
       <p>Difficulty: {{currentOpening.difficulty}}</p>
       <p>{{ turnColor }} to play</p>
       <div id="suggestions" class="md:flex">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 m-2 sm:m-1 w-96 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 m-1 sm:m-2 w-96 rounded" v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
