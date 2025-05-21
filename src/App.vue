@@ -151,7 +151,7 @@ aside {
 }
 
 button:disabled,
-button[disabled]{
-  @apply text-gray-400;
+button[disabled] {
+  @apply text-gray-300;
 }
 </style>
