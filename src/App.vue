@@ -20,10 +20,14 @@ const points = ref(0);
 const round = ref(0);
 const roundEnded = ref(false);
 const turnColor = ref("");
+const traitImagePath = ref("");
 const eligibleOpenings = [...openings]
 
 const refreshTurnColor = () => {
   turnColor.value = boardAPI?.getTurnColor();
+  if (turnColor.value) {
+    traitImagePath.value = `url("${computeKingImage()}")`;
+  }
 }
 
 const pickOpening = () => {
@@ -79,6 +83,10 @@ const toggleSpoiler = (event: Event) => {
   event.target.classList.toggle('spoiler');
 }
 
+const computeKingImage = () => {
+  return new URL(`./assets/${turnColor.value}_king.svg`, import.meta.url).href;
+}
+
 onMounted(() => {
   refreshTurnColor();
 });
@@ -96,11 +104,11 @@ onMounted(() => {
       }" reactive-config />
       <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
-    <aside class="sm:w-100 md:w-200 md:ml-8">
-      <h2 class="text-3xl">SCORE: {{ points }} / {{ round }}</h2>
-      <p class="text-lg">Difficulty: {{currentOpening.difficulty}}</p>
-      <p class="text-lg">{{ turnColor }} to play</p>
-      <div id="suggestions" class="md:flex md:flex-wrap">
+    <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
+      <h2 class="text-4xl pb-2 md:pb-4">SCORE: {{ points }} / {{ round }}</h2>
+      <p class="text-2xl float-right">Difficulty: {{currentOpening.difficulty}}</p>
+      <p class="text-2xl capitalize relative trait">{{ turnColor }} to play</p>
+      <div id="suggestions" class="md:flex md:flex-wrap mt-10">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
@@ -118,14 +126,10 @@ onMounted(() => {
 }
 
 button {
-  @apply bg-blue-500 hover:bg-blue-700 py-2 px-2 m-1 sm:m-2 w-96 rounded text-2xl;
+  @apply bg-blue-500 hover:bg-blue-700 py-2 px-2 m-1 sm:m-2 w-90 rounded text-2xl;
 }
 
 aside {
-  p::first-letter {
-    text-transform: capitalize;
-  }
-
   #suggestions {
     button {
       overflow: hidden;
@@ -140,6 +144,15 @@ aside {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+}
+
+.trait::before {
+  background-image: v-bind(traitImagePath);
+  background-size: 40px;
+  width: 40px;
+  height: 40px;
+  content: "";
+  @apply inline-block mr-2 md:mr-4 align-bottom;
 }
 
 .correct {
