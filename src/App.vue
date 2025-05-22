@@ -105,9 +105,9 @@ onMounted(() => {
       <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
-      <h2 class="text-4xl pb-2 md:pb-4">SCORE: {{ points }} / {{ round }}</h2>
-      <p class="text-2xl float-right">Difficulty: {{currentOpening.difficulty}}</p>
-      <p class="text-2xl capitalize relative trait">{{ turnColor }} to play</p>
+      <h2 class="text-4xl pb-2 md:pb-4">SCORE - {{ points }} / {{ round }}</h2>
+      <p class="text-xl float-right">Difficulty - <img v-for="_ in currentOpening.difficulty" src="./assets/star.png" width="30px" height="30px"  alt="Star" class="inline align-text-top" /></p>
+      <p class="text-xl capitalize relative trait">{{ turnColor }} to play</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
@@ -148,11 +148,11 @@ aside {
 
 .trait::before {
   background-image: v-bind(traitImagePath);
-  background-size: 40px;
-  width: 40px;
-  height: 40px;
+  background-size: 30px;
+  width: 30px;
+  height: 30px;
   content: "";
-  @apply inline-block mr-2 md:mr-4 align-bottom;
+  @apply inline-block mr-1 md:mr-2 align-bottom;
 }
 
 .correct {
