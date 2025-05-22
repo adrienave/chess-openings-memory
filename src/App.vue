@@ -84,7 +84,7 @@ const toggleSpoiler = (event: Event) => {
 }
 
 const computeKingImage = () => {
-  return new URL(`./assets/${turnColor.value}_king.svg`, import.meta.url).href;
+  return new URL(`./assets/images/${turnColor.value}_king.svg`, import.meta.url).href;
 }
 
 onMounted(() => {
@@ -106,7 +106,7 @@ onMounted(() => {
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
       <h2 class="text-4xl pb-2 md:pb-4">SCORE - {{ points }} / {{ round }}</h2>
-      <p class="text-xl float-right">Difficulty - <img v-for="_ in currentOpening.difficulty" src="./assets/star.png" width="30px" height="30px"  alt="Star" class="inline align-text-top" /></p>
+      <p class="text-xl float-right">Difficulty - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="30px" height="30px" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ turnColor }} to play</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
