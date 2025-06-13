@@ -112,7 +112,7 @@ onMounted(() => {
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
       <h2 class="text-4xl pb-2 md:pb-4">{{ i18n.t("score").toUpperCase() }} - {{ points }} / {{ round }}</h2>
-      <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="30px" height="30px" alt="Star" class="inline align-text-top" /></p>
+      <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
