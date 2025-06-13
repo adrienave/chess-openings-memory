@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
+import 'flag-icons/css/flag-icons.min.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
 import { Opening, openings } from '@/data/openings';
 import translations from '@/data/translations.json';
@@ -8,8 +9,8 @@ import translations from '@/data/translations.json';
 import * as _ from "lodash";
 import { I18n } from "i18n-js";
 
-const i18n = new I18n(translations);
-i18n.locale = "fr";
+const i18n = ref(new I18n(translations));
+i18n.value.locale = "en";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
@@ -93,12 +94,21 @@ const computeKingImage = () => {
   return new URL(`./assets/images/${turnColor.value}_king.svg`, import.meta.url).href;
 }
 
+const changeLanguage = (language: string) => {
+  i18n.value.locale = language;
+}
+
 onMounted(() => {
   refreshTurnColor();
 });
 </script>
 
 <template>
+  <div class="fixed top-0 end-0">
+    <button class="language" @click="changeLanguage('fr')"><span class="fi fi-fr mr-2"></span>French</button>
+    <button class="language" @click="changeLanguage('en')"><span class="fi fi-gb mr-2"></span>English</button>
+  </div>
+
   <header>
     <h1 class="text-4xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
   </header>
@@ -132,7 +142,11 @@ onMounted(() => {
 }
 
 button {
-  @apply bg-blue-500 hover:bg-blue-700 py-2 px-2 m-1 sm:m-2 w-90 rounded text-2xl;
+  @apply bg-blue-500 hover:bg-blue-700 py-2 px-2 m-1 sm:m-2 w-90 rounded text-2xl cursor-pointer;
+}
+
+.language {
+  @apply w-50;
 }
 
 aside {
