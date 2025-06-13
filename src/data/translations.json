@@ -1,0 +1,18 @@
+{
+  "en": {
+    "appTitle": "Chess Openings Memory",
+    "score": "score",
+    "difficulty": "difficulty",
+    "trait": "%{color} to play",
+    "white": "white",
+    "black": "black"
+  },
+  "fr": {
+    "appTitle": "Memory d'Ouvertures d'Échecs",
+    "score": "score",
+    "difficulty": "difficulté",
+    "trait": "Trait aux %{color}",
+    "white": "blancs",
+    "black": "noirs"
+  }
+}

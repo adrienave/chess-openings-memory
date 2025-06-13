@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "lib": ["es6", "dom", "es2022"],
     "paths": {
       "@/*": ["./src/*"]

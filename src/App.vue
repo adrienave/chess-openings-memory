@@ -3,7 +3,13 @@ import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
 import { Opening, openings } from '@/data/openings';
+import translations from '@/data/translations.json';
+
 import * as _ from "lodash";
+import { I18n } from "i18n-js";
+
+const i18n = new I18n(translations);
+i18n.locale = "fr";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
@@ -94,7 +100,7 @@ onMounted(() => {
 
 <template>
   <header>
-    <h1 class="text-4xl md:text-5xl mb-2 md:mb-4 tracking-tighter">Chess Openings Memory</h1>
+    <h1 class="text-4xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
   </header>
 
   <main class="md:flex">
@@ -105,9 +111,9 @@ onMounted(() => {
       <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
-      <h2 class="text-4xl pb-2 md:pb-4">SCORE - {{ points }} / {{ round }}</h2>
-      <p class="text-xl float-right">Difficulty - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="30px" height="30px" alt="Star" class="inline align-text-top" /></p>
-      <p class="text-xl capitalize relative trait">{{ turnColor }} to play</p>
+      <h2 class="text-4xl pb-2 md:pb-4">{{ i18n.t("score").toUpperCase() }} - {{ points }} / {{ round }}</h2>
+      <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="30px" height="30px" alt="Star" class="inline align-text-top" /></p>
+      <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
           {{ suggestion }}
