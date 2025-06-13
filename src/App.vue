@@ -104,13 +104,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="fixed top-0 end-0">
+  <div class="min-md:hidden fixed top-0 end-0">
+    <span class="fi fi-fr mr-2 cursor-pointer" @click="changeLanguage('fr')"></span>
+    <span class="fi fi-gb mr-2 cursor-pointer" @click="changeLanguage('en')"></span>
+  </div>
+
+  <div class="max-sm:hidden fixed top-0 end-0">
     <button class="language" @click="changeLanguage('fr')"><span class="fi fi-fr mr-2"></span>French</button>
     <button class="language" @click="changeLanguage('en')"><span class="fi fi-gb mr-2"></span>English</button>
   </div>
 
-  <header>
-    <h1 class="text-4xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
+  <header class="max-w-[90%]">
+    <h1 class="text-3xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
   </header>
 
   <main class="md:flex">
