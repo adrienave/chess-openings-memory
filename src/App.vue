@@ -3,11 +3,13 @@ import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import 'flag-icons/css/flag-icons.min.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
-import { Opening, openings } from '@/data/openings';
+import { Opening } from '@/models/opening';
+import csvData from '@/data/openings.csv?raw';
 import translations from '@/data/translations.json';
 
 import * as _ from "lodash";
 import { I18n } from "i18n-js";
+import {parseCSVContent} from "@/util";
 
 const i18n = ref(new I18n(translations));
 i18n.value.locale = "en";
@@ -28,6 +30,7 @@ const round = ref(0);
 const roundEnded = ref(false);
 const turnColor = ref("");
 const traitImagePath = ref("");
+const openings: Opening[] = parseCSVContent(csvData) as Opening[];
 const eligibleOpenings = [...openings]
 
 const refreshTurnColor = () => {
