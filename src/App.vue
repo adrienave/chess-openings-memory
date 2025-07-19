@@ -50,11 +50,12 @@ const pickOpening = () => {
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.fen;
 
-  suggestions.value = [currentOpening.value?.name];
+  suggestions.value = [i18n.value.locale == 'fr' ? currentOpening.value?.frenchName : currentOpening.value?.name];
   while (suggestions.value.length < 4) {
-    let suggestedOpening = _.sample(openings.filter(opening => opening.category == currentOpening.value.category));
-    if (!suggestions.value.includes(suggestedOpening.name)) {
-      suggestions.value.push(suggestedOpening.name)
+    let suggestedOpening = _.sample(openings.filter(opening => opening.category === currentOpening.value.category));
+    let localizedOpeningName = i18n.value.locale == 'fr' ? suggestedOpening.frenchName : suggestedOpening.name
+    if (!suggestions.value.includes(localizedOpeningName)) {
+      suggestions.value.push(localizedOpeningName)
     }
   }
   suggestions.value = _.shuffle(suggestions.value);
@@ -73,7 +74,8 @@ const selectSuggestion = (suggestion: string, event: Event) => {
   if (!(suggestionElement instanceof Element)) {
     return;
   }
-  if (currentOpening.value.name === suggestion) {
+  const localizedOpeningName = i18n.value.locale == 'fr' ?  currentOpening.value.frenchName : currentOpening.value.name;
+  if (localizedOpeningName === suggestion) {
     points.value++;
   } else {
     suggestionElement.classList.add('invalid');
@@ -133,7 +135,7 @@ onMounted(() => {
       <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
-        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion && roundEnded }">
+        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: (i18n.locale == 'fr' ?  currentOpening.frenchName : currentOpening.name) == suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
