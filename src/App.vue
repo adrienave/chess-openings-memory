@@ -20,7 +20,7 @@ const DELAY_REFRESH_TURN_COLOR_MS = 50;
 const isDevMode = process.env.NODE_ENV === 'development';
 
 const currentOpening: Ref<Opening> = ref(undefined);
-const suggestions: Ref<string[]> = ref([]);
+const suggestions: Ref<Opening[]> = ref([]);
 const boardConfig: Reactive<BoardConfig> = reactive({
   viewOnly: true
 });
@@ -50,12 +50,11 @@ const pickOpening = () => {
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.fen;
 
-  suggestions.value = [computeOpeningName(currentOpening.value, i18n.value.locale)];
+  suggestions.value = [currentOpening.value];
   while (suggestions.value.length < 4) {
     let suggestedOpening = _.sample(openings.filter(opening => opening.category === currentOpening.value.category));
-    let localizedOpeningName = computeOpeningName(suggestedOpening, i18n.value.locale);
-    if (!suggestions.value.includes(localizedOpeningName)) {
-      suggestions.value.push(localizedOpeningName)
+    if (!suggestions.value.some(opening => opening.name === suggestedOpening.name)) {
+      suggestions.value.push(suggestedOpening)
     }
   }
   suggestions.value = _.shuffle(suggestions.value);
@@ -69,13 +68,12 @@ const resetSuggestionBackground = (suggestionElement: Element) => {
   suggestionElement.classList.remove('invalid');
 }
 
-const selectSuggestion = (suggestion: string, event: Event) => {
+const selectSuggestion = (suggestion: Opening, event: Event) => {
   const suggestionElement = event.target;
   if (!(suggestionElement instanceof Element)) {
     return;
   }
-  const localizedOpeningName = computeOpeningName(currentOpening.value, i18n.value.locale)
-  if (localizedOpeningName === suggestion) {
+  if (currentOpening.value.name === suggestion.name) {
     points.value++;
   } else {
     suggestionElement.classList.add('invalid');
@@ -135,8 +133,8 @@ onMounted(() => {
       <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
-        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: computeOpeningName(currentOpening, i18n.locale) === suggestion && roundEnded }">
-          {{ suggestion }}
+        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion.name && roundEnded }">
+          {{ computeOpeningName(suggestion, i18n.locale) }}
         </button>
       </div>
       <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode">{{ computeOpeningName(currentOpening, i18n.locale) }}</h2>
