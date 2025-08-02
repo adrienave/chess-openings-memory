@@ -3,7 +3,7 @@ import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import 'flag-icons/css/flag-icons.min.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
-import { Opening } from '@/models/opening';
+import {computeOpeningName, Opening} from '@/models/opening';
 import csvData from '@/data/openings.csv?raw';
 import translations from '@/data/translations.json';
 
@@ -50,10 +50,10 @@ const pickOpening = () => {
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.fen;
 
-  suggestions.value = [i18n.value.locale == 'fr' ? currentOpening.value?.frenchName : currentOpening.value?.name];
+  suggestions.value = [computeOpeningName(currentOpening.value, i18n.value.locale)];
   while (suggestions.value.length < 4) {
     let suggestedOpening = _.sample(openings.filter(opening => opening.category === currentOpening.value.category));
-    let localizedOpeningName = i18n.value.locale == 'fr' ? suggestedOpening.frenchName : suggestedOpening.name
+    let localizedOpeningName = computeOpeningName(suggestedOpening, i18n.value.locale);
     if (!suggestions.value.includes(localizedOpeningName)) {
       suggestions.value.push(localizedOpeningName)
     }
@@ -74,7 +74,7 @@ const selectSuggestion = (suggestion: string, event: Event) => {
   if (!(suggestionElement instanceof Element)) {
     return;
   }
-  const localizedOpeningName = i18n.value.locale == 'fr' ?  currentOpening.value.frenchName : currentOpening.value.name;
+  const localizedOpeningName = computeOpeningName(currentOpening.value, i18n.value.locale)
   if (localizedOpeningName === suggestion) {
     points.value++;
   } else {
@@ -135,11 +135,11 @@ onMounted(() => {
       <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10">
-        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: (i18n.locale == 'fr' ?  currentOpening.frenchName : currentOpening.name) == suggestion && roundEnded }">
+        <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: computeOpeningName(currentOpening, i18n.locale) === suggestion && roundEnded }">
           {{ suggestion }}
         </button>
       </div>
-      <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode">{{ currentOpening.name }}</h2>
+      <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode">{{ computeOpeningName(currentOpening, i18n.locale) }}</h2>
     </aside>
   </main>
 </template>
