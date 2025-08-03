@@ -113,8 +113,8 @@ onMounted(() => {
   </div>
 
   <div class="max-sm:hidden fixed top-0 end-0">
-    <button class="language" @click="changeLanguage('fr')"><span class="fi fi-fr mr-2"></span>French</button>
-    <button class="language" @click="changeLanguage('en')"><span class="fi fi-gb mr-2"></span>English</button>
+    <button class="language" @click="changeLanguage('fr')"><span class="fi fi-fr mr-2"></span>{{ i18n.t("languages.french") }}</button>
+    <button class="language" @click="changeLanguage('en')"><span class="fi fi-gb mr-2"></span>{{ i18n.t("languages.english") }}</button>
   </div>
 
   <header class="max-w-[90%]">
@@ -154,7 +154,7 @@ button {
 }
 
 .language {
-  @apply w-50;
+  @apply w-50 capitalize;
 }
 
 aside {

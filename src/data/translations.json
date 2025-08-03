@@ -1,5 +1,9 @@
 {
   "en": {
+    "languages": {
+      "english": "english",
+      "french": "french"
+    },
     "appTitle": "Chess Openings Memory",
     "score": "score",
     "difficulty": "difficulty",
@@ -8,6 +12,10 @@
     "black": "black"
   },
   "fr": {
+    "languages": {
+      "english": "anglais",
+      "french": "français"
+    },
     "appTitle": "Memory d'Ouvertures d'Échecs",
     "score": "score",
     "difficulty": "difficulté",
