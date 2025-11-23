@@ -51,6 +51,7 @@ const pickOpening = () => {
   _.pull(eligibleOpenings, newOpening);
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.fen;
+  boardAPI?.resetBoard();
 
   suggestions.value = [currentOpening.value];
   while (suggestions.value.length < 4) {
@@ -76,6 +77,7 @@ const pickOpeningGuessMove = () => {
   _.pull(eligibleOpenings, newOpening);
   currentOpening.value = newOpening
   boardConfig.fen = currentOpening.value?.previousMoveFen;
+  boardAPI?.resetBoard();
 
   roundEnded.value = false;
   setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
