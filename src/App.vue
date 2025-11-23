@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {BoardApi, BoardConfig, TheChessboard} from 'vue3-chessboard';
+import {BoardApi, BoardConfig, MoveEvent, TheChessboard} from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 import 'flag-icons/css/flag-icons.min.css';
 import { ref, reactive, onMounted, Ref, Reactive } from 'vue';
@@ -15,14 +15,16 @@ const i18n = ref(new I18n(translations));
 i18n.value.locale = "en";
 
 const DELAY_BETWEEN_ROUNDS_MS = 500;
+const DELAY_BEFORE_MOVE_VALIDATION_MS = 250;
 const DELAY_REFRESH_TURN_COLOR_MS = 50;
 
 const isDevMode = process.env.NODE_ENV === 'development';
 
 const currentOpening: Ref<Opening> = ref(undefined);
 const suggestions: Ref<Opening[]> = ref([]);
+const isQuizMode = ref(true);
 const boardConfig: Reactive<BoardConfig> = reactive({
-  viewOnly: true
+  viewOnly: isQuizMode.value
 });
 let boardAPI: BoardApi;
 const points = ref(0);
@@ -58,8 +60,24 @@ const pickOpening = () => {
     }
   }
   suggestions.value = _.shuffle(suggestions.value);
-  roundEnded.value = false;
 
+  roundEnded.value = false;
+  setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
+}
+
+const pickOpeningGuessMove = () => {
+  let newOpening: Opening;
+  if (eligibleOpenings.length == 0) {
+    eligibleOpenings.push(...openings);
+  }
+  do {
+    newOpening = _.sample(eligibleOpenings);
+  } while (!newOpening.previousMoveFen)
+  _.pull(eligibleOpenings, newOpening);
+  currentOpening.value = newOpening
+  boardConfig.fen = currentOpening.value?.previousMoveFen;
+
+  roundEnded.value = false;
   setTimeout(refreshTurnColor, DELAY_REFRESH_TURN_COLOR_MS)
 }
 
@@ -101,6 +119,31 @@ const changeLanguage = (language: string) => {
   i18n.value.locale = language;
 }
 
+const switchGameMode = () => {
+  isQuizMode.value = !isQuizMode.value;
+  boardConfig.viewOnly = isQuizMode.value;
+  if (isQuizMode.value) {
+    pickOpening();
+  } else {
+    pickOpeningGuessMove();
+  }
+}
+
+const handleMove = (_: MoveEvent) => {
+  setTimeout(validateMove, DELAY_BEFORE_MOVE_VALIDATION_MS)
+}
+
+const validateMove = () => {
+  if (boardAPI.getFen().split(" ")[0] === currentOpening.value.fen.split(" ")[0]) {
+    points.value++;
+    round.value++;
+    roundEnded.value = true;
+    setTimeout(pickOpeningGuessMove, DELAY_BETWEEN_ROUNDS_MS);
+  } else {
+    boardAPI.undoLastMove();
+  }
+}
+
 onMounted(() => {
   refreshTurnColor();
 });
@@ -117,6 +160,10 @@ onMounted(() => {
     <button class="language" @click="changeLanguage('en')"><span class="fi fi-gb mr-2"></span>{{ i18n.t("languages.english") }}</button>
   </div>
 
+  <div class="max-sm:hidden fixed top-20 end-0">
+    <button id="switchGameMode" @click="switchGameMode()">Switch Game Mode</button>
+  </div>
+
   <header class="max-w-[90%]">
     <h1 class="text-3xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
   </header>
@@ -125,19 +172,20 @@ onMounted(() => {
     <div class="md:shrink-0">
       <TheChessboard id="chessboard" :board-config="boardConfig" @board-created="(api) => {
         boardAPI = api;
-      }" reactive-config />
+      }" @move="handleMove" reactive-config />
       <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
       <h2 class="text-4xl pb-2 md:pb-4">{{ i18n.t("score").toUpperCase() }} - {{ points }} / {{ round }}</h2>
       <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
       <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
-      <div id="suggestions" class="md:flex md:flex-wrap mt-10">
+      <div id="suggestions" class="md:flex md:flex-wrap mt-10" v-if="isQuizMode">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion.name && roundEnded }">
           {{ computeOpeningName(suggestion, i18n.locale) }}
         </button>
       </div>
-      <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode">{{ computeOpeningName(currentOpening, i18n.locale) }}</h2>
+      <h2 class="spoiler" @click="toggleSpoiler" v-if="isDevMode && isQuizMode">{{ computeOpeningName(currentOpening, i18n.locale) }}</h2>
+      <h2 class="text-6xl pb-2 md:pb-4 mt-10" v-if="!isQuizMode">{{ computeOpeningName(currentOpening, i18n.locale) }}</h2>
     </aside>
   </main>
 </template>

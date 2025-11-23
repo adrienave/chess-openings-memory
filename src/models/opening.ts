@@ -2,6 +2,7 @@ export interface Opening {
     name: string;
     frenchName: string;
     fen: string;
+    previousMoveFen: string;
     category: string;
     difficulty: number;
 }
