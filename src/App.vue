@@ -161,11 +161,11 @@ onMounted(() => {
   </div>
 
   <div class="max-sm:hidden fixed top-20 end-0">
-    <button id="switchGameMode" @click="switchGameMode()">Switch Game Mode</button>
+    <button class="capitalize" @click="switchGameMode()">{{ i18n.t("switchGameMode") }}</button>
   </div>
 
   <header class="max-w-[90%]">
-    <h1 class="text-3xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }}</h1>
+    <h1 class="text-3xl md:text-5xl mb-2 md:mb-4 tracking-tighter">{{ i18n.t("appTitle") }} - {{ isQuizMode ? i18n.t("quizMode") : i18n.t("guessMoveMode") }}</h1>
   </header>
 
   <main class="md:flex">

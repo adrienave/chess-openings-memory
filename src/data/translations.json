@@ -5,6 +5,9 @@
       "french": "french"
     },
     "appTitle": "Chess Openings Memory",
+    "switchGameMode": "switch game mode",
+    "quizMode": "Quiz Mode",
+    "guessMoveMode": "Guess Move Mode",
     "score": "score",
     "difficulty": "difficulty",
     "trait": "%{color} to play",
@@ -17,6 +20,9 @@
       "french": "français"
     },
     "appTitle": "Memory d'Ouvertures d'Échecs",
+    "switchGameMode": "alterner mode de jeu",
+    "quizMode": "Mode Quiz",
+    "guessMoveMode": "Mode Deviner le coup",
     "score": "score",
     "difficulty": "difficulté",
     "trait": "Trait aux %{color}",
