@@ -146,6 +146,10 @@ const validateMove = () => {
   }
 }
 
+const toggleBoard = () => {
+  boardAPI.toggleOrientation();
+}
+
 onMounted(() => {
   refreshTurnColor();
 });
@@ -164,6 +168,7 @@ onMounted(() => {
 
   <div class="max-sm:hidden fixed top-20 end-0">
     <button class="capitalize" @click="switchGameMode()">{{ i18n.t("switchGameMode") }}</button>
+    <button class="capitalize" @click="toggleBoard()">{{ i18n.t("toggleBoard") }}</button>
   </div>
 
   <header class="max-w-[90%]">
@@ -177,10 +182,11 @@ onMounted(() => {
       }" @move="handleMove" reactive-config />
       <p class="text-xs">{{ boardConfig.fen }}</p>
     </div>
+
     <aside class="sm:w-100 md:w-200 md:ml-8 border-2 border-solid rounded p-4 bg-gray-700 border-gray-600 m-auto h-fit">
       <h2 class="text-4xl pb-2 md:pb-4">{{ i18n.t("score").toUpperCase() }} - {{ points }} / {{ round }}</h2>
       <p class="text-xl float-right capitalize">{{ i18n.t("difficulty") }} - <img v-for="_ in currentOpening.difficulty" src="./assets/images/star.png" width="32" height="32" alt="Star" class="inline align-text-top" /></p>
-      <p class="text-xl capitalize relative trait">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
+      <p class="text-xl relative trait capitalize">{{ i18n.t("trait", { "color": i18n.t(turnColor) }) }}</p>
       <div id="suggestions" class="md:flex md:flex-wrap mt-10" v-if="isQuizMode">
         <button v-for="suggestion in suggestions" @click="selectSuggestion(suggestion, $event)" :disabled="roundEnded" :class="{ correct: currentOpening.name === suggestion.name && roundEnded }">
           {{ computeOpeningName(suggestion, i18n.locale) }}
