@@ -10,6 +10,7 @@ import translations from '@/data/translations.json';
 import * as _ from "lodash";
 import { I18n } from "i18n-js";
 import {parseCSVContent} from "@/util";
+import {Color, toColor} from "@/models/color";
 
 const i18n = ref(new I18n(translations));
 i18n.value.locale = "en";
@@ -23,7 +24,7 @@ const isDevMode = process.env.NODE_ENV === 'development';
 const currentOpening: Ref<Opening> = ref(undefined);
 const suggestions: Ref<Opening[]> = ref([]);
 const isQuizMode = ref(true);
-const turnColor: Ref<"white" | "black"> = ref("white");
+const turnColor: Ref<Color> = ref(Color.White);
 const boardConfig: Reactive<BoardConfig> = reactive({
   viewOnly: isQuizMode.value,
   orientation: turnColor
@@ -37,7 +38,7 @@ const openings: Opening[] = parseCSVContent(csvData) as Opening[];
 const eligibleOpenings = [...openings]
 
 const refreshTurnColor = () => {
-  turnColor.value = boardAPI?.getTurnColor();
+  turnColor.value = toColor(boardAPI?.getTurnColor());
   if (turnColor.value) {
     traitImagePath.value = `url("${computeKingImage()}")`;
   }
