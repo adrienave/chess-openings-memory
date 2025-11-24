@@ -23,14 +23,15 @@ const isDevMode = process.env.NODE_ENV === 'development';
 const currentOpening: Ref<Opening> = ref(undefined);
 const suggestions: Ref<Opening[]> = ref([]);
 const isQuizMode = ref(true);
+const turnColor: Ref<"white" | "black"> = ref("white");
 const boardConfig: Reactive<BoardConfig> = reactive({
-  viewOnly: isQuizMode.value
+  viewOnly: isQuizMode.value,
+  orientation: turnColor
 });
 let boardAPI: BoardApi;
 const points = ref(0);
 const round = ref(0);
 const roundEnded = ref(false);
-const turnColor = ref("");
 const traitImagePath = ref("");
 const openings: Opening[] = parseCSVContent(csvData) as Opening[];
 const eligibleOpenings = [...openings]
@@ -146,7 +147,7 @@ const validateMove = () => {
   }
 }
 
-const toggleBoard = () => {
+const toggleBoardOrientation = () => {
   boardAPI.toggleOrientation();
 }
 
@@ -168,7 +169,7 @@ onMounted(() => {
 
   <div class="max-sm:hidden fixed top-20 end-0">
     <button class="capitalize" @click="switchGameMode()">{{ i18n.t("switchGameMode") }}</button>
-    <button class="capitalize" @click="toggleBoard()">{{ i18n.t("toggleBoard") }}</button>
+    <button class="capitalize" @click="toggleBoardOrientation()">{{ i18n.t("toggleBoard") }}</button>
   </div>
 
   <header class="max-w-[90%]">
